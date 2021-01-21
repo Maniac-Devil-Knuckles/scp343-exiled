@@ -52,6 +52,6 @@ namespace SCP343
         //[Description("What give scp-343 on spawn")]
         public int[] scp343_itemsatspawn { get; set; } = new int[] { 15 };
         //[Description("Moving Speed lift")]
-        public float moving_speed { get; set; } = 8.5f;
+        public float lift_moving_speed { get; set; } = 8.5f;
     }
 }

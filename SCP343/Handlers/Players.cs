@@ -27,7 +27,7 @@ namespace SCP343.HandlersPl
             {
                 ev.Lift.movingSpeed = 1f;
             }
-            else ev.Lift.movingSpeed = plugin.Config.moving_speed;
+            else ev.Lift.movingSpeed = plugin.Config.lift_moving_speed;
         }
 
         public void OnRoundEnding(EndingRoundEventArgs ev)

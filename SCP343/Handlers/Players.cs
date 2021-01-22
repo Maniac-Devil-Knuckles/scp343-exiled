@@ -244,6 +244,7 @@ namespace SCP343.HandlersPl
         }
         public void OnRoundStarted()
         {
+            Active343AndBadgeDict.Clear();
             IsOpenAll.Clear();
             hecktime.Clear();
             colorbadge.Clear();

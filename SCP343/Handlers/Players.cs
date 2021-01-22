@@ -239,7 +239,7 @@ namespace SCP343.HandlersPl
             hecktime.Clear();
             colorbadge.Clear();
             namebadge.Clear();
-            if (!plugin.Config.IsEnabled || plugin.Config.scp343_disable)
+            if (!plugin.Config.IsEnabled)
             {
                 plugin.OnDisabled();
                 return;

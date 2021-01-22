@@ -242,6 +242,14 @@ namespace SCP343.HandlersPl
             }
             if (Active343AndBadgeDict.Contains(ev.Attacker.Id)) ev.Amount = 0;
         }
+        public void OnRestartingRound()
+        {
+            Active343AndBadgeDict.Clear();
+            IsOpenAll.Clear();
+            hecktime.Clear();
+            colorbadge.Clear();
+            namebadge.Clear();
+        }
         public void OnRoundStarted()
         {
             Active343AndBadgeDict.Clear();

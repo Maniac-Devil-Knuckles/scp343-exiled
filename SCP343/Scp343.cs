@@ -61,6 +61,7 @@ namespace SCP343
             Server.SendingRemoteAdminCommand += players.OnCommand;
             Player.InteractingElevator += players.OnInteractingElevator;
             Server.RoundEnded += players.OnRoundEnd;
+            Server.RestartingRound += players.OnRestartingRound;
         }
 
 		public override void OnDisabled()

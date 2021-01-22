@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Exiled;
 using Exiled.API;
 using Exiled.API.Features;
@@ -14,9 +14,15 @@ using SCP106 = Exiled.Events.Handlers.Scp106;
 using WARHEAD = Exiled.Events.Handlers.Warhead;
 using Exiled.API.Enums;
 using HarmonyLib;
+using System.Collections.Generic;
 
 namespace SCP343
 {
+    public class API
+    {
+        public static List<Exiled.API.Features.Player> scp343 = new List<Exiled.API.Features.Player>();
+    }
+
     public class SCP343 : Plugin<Config>
     {
 		public Players players { get; private set; }
@@ -28,7 +34,6 @@ namespace SCP343
         public override PluginPriority Priority => PluginPriority.Highest;
 
         public SCP343() { }
-
 		public override void OnEnabled() //22>19
 		{
 			players = new Players(this);
@@ -55,6 +60,7 @@ namespace SCP343
             Player.EnteringPocketDimension += players.OnEnteringPocketDimension;
             Server.SendingRemoteAdminCommand += players.OnCommand;
             Player.InteractingElevator += players.OnInteractingElevator;
+            Server.RoundEnded += players.OnRoundEnd;
         }
 
 		public override void OnDisabled()

@@ -238,22 +238,27 @@ namespace SCP343.HandlersPl
                 return;
             }
             int chance = Player.UserIdsCache.Count<2?10000:RNG.Next(1, 100);
-            if (chance <= plugin.Config.scp343_spawnchance||plugin.Config.minplayers>Player.UserIdsCache.Count) return;
+            int count = Player.List.Count();
+            if (chance <= plugin.Config.scp343_spawnchance) return;
+            if (plugin.Config.minplayers > count&&count!=1) return;
             List<Player> ClassDList = new List<Player>();
             foreach(Player play in Player.List)
             {
                 if (play.Role == RoleType.ClassD) ClassDList.Add(play);
             }
             Player player = ClassDList[RNG.Next(ClassDList.Count)];
-            spawn343(player);
-            tryplugin(player);
-            
+            Timing.CallDelayed(0.5f, () =>
+            {
+                spawn343(player);
+                tryplugin(player);
+            });
+
         }//
         void tryplugin(Player player)
         {
             try
             {
-                if (IsEnabledPluginAdvancedSubclassing)
+                if (Exiled.Loader.Loader.Plugins.Any(e=>e.Name== "Subclass"&&e.Author== "Steven4547466"&&e.Config.IsEnabled))
                 {
                     Subclass.API.RemoveClass(player);
                 }
@@ -268,7 +273,6 @@ namespace SCP343.HandlersPl
         {
             API.scp343.Add(player);
             Active343AndBadgeDict.Add(player.Id);
-            player.ClearInventory();
             colorbadge.Add(player.Id, player.ReferenceHub.serverRoles.NetworkMyColor);
             namebadge.Add(player.Id, player.ReferenceHub.serverRoles.NetworkMyText);
             player.ReferenceHub.serverRoles.NetworkMyColor = "red";
@@ -280,15 +284,14 @@ namespace SCP343.HandlersPl
             }
             if (plugin.Config.scp343_console) player.SendConsoleMessage("\n----------------------------------------------------------- \n" + plugin.Config.scp343_consoletext.Replace("343DOORTIME", plugin.Config.scp343_opendoortime.ToString()).Replace("343HECKTIME", plugin.Config.scp343_hecktime.ToString()) + "\n-----------------------------------------------------------", "green");
 
-            Timing.CallDelayed(1f, () =>
+            Timing.CallDelayed(0.5f, () =>
             {
+                player.EnableEffect(Exiled.API.Enums.EffectType.Scp207, 10000000000);
+                player.EnableEffect(Exiled.API.Enums.EffectType.Scp207, 10000000000, true);
                 player.ClearInventory();
                 foreach (int item in plugin.Config.scp343_itemsatspawn) player.AddItem((ItemType)item);
                 hecktime.Add(player.Id, true);
                 IsOpenAll.Add(player.Id, false);
-                Active343AndBadgeDict.Add(player.Id);
-                player.EnableEffect(Exiled.API.Enums.EffectType.Scp207, 10000000000);
-                player.EnableEffect(Exiled.API.Enums.EffectType.Scp207, 10000000000, true);
                 player.Health = 100f;
             });
             Timing.CallDelayed(plugin.Config.scp343_opendoortime, () => {

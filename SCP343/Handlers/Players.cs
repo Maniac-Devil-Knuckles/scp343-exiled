@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Interactables.Interobjects.DoorUtils;
 using System.Collections.Generic;
 using Exiled.API.Features;
@@ -92,38 +92,11 @@ namespace SCP343.HandlersPl
                                 return;
                             }
                             player.SetRole(RoleType.ClassD, false, true);
-                            Active343AndBadgeDict.Add(PlayerId);
-                            if (plugin.Config.scp343_alert)
+                            Timing.CallDelayed(0.5f, () =>
                             {
-                                player.ClearBroadcasts();
-                                player.Broadcast(15, plugin.Config.scp343_alerttext);
-                            }
-                            if (plugin.Config.scp343_console) player.SendConsoleMessage("\n----------------------------------------------------------- \n" + plugin.Config.scp343_consoletext.Replace("343DOORTIME", plugin.Config.scp343_opendoortime.ToString()).Replace("343HECKTIME", plugin.Config.scp343_hecktime.ToString()) + "\n-----------------------------------------------------------", "green");
-                            Timing.CallDelayed(1f, () =>
-                            {
-                                player.ClearInventory();
-                                foreach (int item in plugin.Config.scp343_itemsatspawn) player.AddItem((ItemType)item);
-                                player.EnableEffect(Exiled.API.Enums.EffectType.Scp207, 10000000000);
-                                player.EnableEffect(Exiled.API.Enums.EffectType.Scp207, 10000000000, true);
-                                hecktime.Add(PlayerId, true);
-                                IsOpenAll.Add(PlayerId, false);
+                                spawn343(player);
+                                tryplugin(player);
                             });
-                            Timing.CallDelayed(plugin.Config.scp343_opendoortime, () =>
-                            {
-                                IsOpenAll.Remove(PlayerId);
-                                IsOpenAll.Add(PlayerId, true);
-                            });
-                            
-                            Timing.CallDelayed(plugin.Config.scp343_hecktime, () =>
-                            {
-                                hecktime.Remove(PlayerId);
-                                hecktime.Add(PlayerId, false);
-                            });
-                            colorbadge.Add(PlayerId, player.ReferenceHub.serverRoles.NetworkMyColor);
-                            namebadge.Add(PlayerId, player.ReferenceHub.serverRoles.NetworkMyText);
-                            player.ReferenceHub.serverRoles.NetworkMyColor = "red";
-                            player.ReferenceHub.serverRoles.NetworkMyText = "SCP-343";
-                            API.scp343.Add(player);
                             ev.ReplyMessage = $"Made {player.Nickname} SCP-343";
                             return;
                         }
@@ -273,19 +246,24 @@ namespace SCP343.HandlersPl
             }
             Player player = ClassDList[RNG.Next(ClassDList.Count)];
             spawn343(player);
+            tryplugin(player);
+            
+        }//
+        void tryplugin(Player player)
+        {
             try
             {
                 if (IsEnabledPluginAdvancedSubclassing)
                 {
                     Subclass.API.RemoveClass(player);
                 }
-                
-            } catch(Exception ex)
+
+            }
+            catch (Exception ex)
             {
                 Log.Debug(ex, false);
             }
-            
-        }//
+        }
         void spawn343(Player player)
         {
             API.scp343.Add(player);

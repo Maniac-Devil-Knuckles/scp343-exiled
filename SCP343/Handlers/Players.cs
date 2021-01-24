@@ -108,7 +108,7 @@ namespace SCP343.HandlersPl
                     ev.ReplyMessage = ex.Message;
                     Log.Info(ex);
                 }
-                }
+                } 
         }
 
         public void OnSendingConsoleCommand(SendingConsoleCommandEventArgs ev)
@@ -269,27 +269,42 @@ namespace SCP343.HandlersPl
                 Log.Debug(ex, false);
             }
         }
-        void spawn343(Player player)
+        void spawn343(Player player, bool scp0492 = false)
         {
+            if(scp0492)
+            {
+                API.scp343.Remove(player);
+                Active343AndBadgeDict.Remove(player.Id);
+                //Log.Info(namebadge[ev.Player.Id]);
+                if (colorbadge.TryGetValue(player.Id, out string color)) player.ReferenceHub.serverRoles.NetworkMyColor = color;
+                if (namebadge.TryGetValue(player.Id, out string name)) player.ReferenceHub.serverRoles.NetworkMyText = name;
+                colorbadge.Remove(player.Id);
+                namebadge.Remove(player.Id);
+                IsOpenAll.Remove(player.Id);
+                hecktime.Remove(player.Id);
+            }
             API.scp343.Add(player);
             Active343AndBadgeDict.Add(player.Id);
             colorbadge.Add(player.Id, player.ReferenceHub.serverRoles.NetworkMyColor);
             namebadge.Add(player.Id, player.ReferenceHub.serverRoles.NetworkMyText);
             player.ReferenceHub.serverRoles.NetworkMyColor = "red";
             player.ReferenceHub.serverRoles.NetworkMyText = "SCP-343";
-            if (plugin.Config.scp343_alert)
+            if (plugin.Config.scp343_alert&&!scp0492)
             {
                 player.ClearBroadcasts();
                 player.Broadcast(15, plugin.Config.scp343_alerttext);
             }
-            if (plugin.Config.scp343_console) player.SendConsoleMessage("\n----------------------------------------------------------- \n" + plugin.Config.scp343_consoletext.Replace("343DOORTIME", plugin.Config.scp343_opendoortime.ToString()).Replace("343HECKTIME", plugin.Config.scp343_hecktime.ToString()) + "\n-----------------------------------------------------------", "green");
+            if (plugin.Config.scp343_console&&!scp0492) player.SendConsoleMessage("\n----------------------------------------------------------- \n" + plugin.Config.scp343_consoletext.Replace("343DOORTIME", plugin.Config.scp343_opendoortime.ToString()).Replace("343HECKTIME", plugin.Config.scp343_hecktime.ToString()) + "\n-----------------------------------------------------------", "green");
 
             Timing.CallDelayed(0.5f, () =>
             {
                 player.EnableEffect(Exiled.API.Enums.EffectType.Scp207, 10000000000);
                 player.EnableEffect(Exiled.API.Enums.EffectType.Scp207, 10000000000, true);
                 player.ClearInventory();
-                foreach (int item in plugin.Config.scp343_itemsatspawn) player.AddItem((ItemType)item);
+                if (!scp0492)
+                {
+                    foreach (int item in plugin.Config.scp343_itemsatspawn) player.AddItem((ItemType)item);
+                }
                 hecktime.Add(player.Id, true);
                 IsOpenAll.Add(player.Id, false);
                 player.Health = 100f;
@@ -318,7 +333,13 @@ namespace SCP343.HandlersPl
        
         public void OnChangingRole(ChangingRoleEventArgs ev)
         {
-            if(Active343AndBadgeDict.Contains(ev.Player.Id))
+            List<ItemType> items = new List<ItemType>();
+            foreach(var ite in ev.Player.Inventory.items)
+            {
+                Log.Debug(ite.id,false);
+                items.Add(ite.id);
+            }
+            if (Active343AndBadgeDict.Contains(ev.Player.Id)&&ev.NewRole!=RoleType.Scp0492)
             {
                 API.scp343.Remove(ev.Player);
                 Active343AndBadgeDict.Remove(ev.Player.Id);
@@ -329,6 +350,20 @@ namespace SCP343.HandlersPl
                 namebadge.Remove(ev.Player.Id);
                 IsOpenAll.Remove(ev.Player.Id);
                 hecktime.Remove(ev.Player.Id);
+            } else if(Active343AndBadgeDict.Contains(ev.Player.Id) && ev.NewRole == RoleType.Scp0492)
+            {
+                ev.NewRole = RoleType.ClassD;
+                Vector3 pos = ev.Player.Position;
+                Timing.CallDelayed(0.4f, () => { spawn343(ev.Player,true); });
+                Timing.CallDelayed(1.1f, () =>
+                {
+                    Player player = Player.Get(ev.Player.Id);
+                    player.Position = pos;
+                    foreach (var item in items)
+                    {
+                        player.AddItem(item);
+                    }
+                });
             }
         }
 
@@ -338,7 +373,23 @@ namespace SCP343.HandlersPl
             if (Active343AndBadgeDict.Contains(ev.ButtonPresser.Id)) ev.IsAllowed = false;
         }
 
-        
+        public void OnEnraging(EnragingEventArgs ev)
+        {
+            if(Active343AndBadgeDict.Contains(ev.Player.Id))
+            {
+                ev.IsAllowed = false;
+            }
+        }
+        public void OnAddingTarget(AddingTargetEventArgs ev)
+        {
+            if(Active343AndBadgeDict.Contains(ev.Target.Id))
+            {
+                ev.AhpToAdd = 0;
+                ev.EnrageTimeToAdd = 0;
+                ev.IsAllowed = false;
+            }
+        }
+
         public void OnActivating(ActivatingEventArgs ev)
         {
             if (Active343AndBadgeDict.Contains(ev.Player.Id)) ev.IsAllowed = false;

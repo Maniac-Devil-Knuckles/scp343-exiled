@@ -64,12 +64,18 @@
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\..\..\..\..\Volumes\Games\steamapps\common\SCP Secret Laboratory ServerMod\SCPSL_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
+    <Reference Include="Subclass-1.2.15">
+      <HintPath>..\..\..\Downloads\Subclass-1.2.15.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Scp343.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Handlers\Players.cs" />
+    <Compile Include="patches\SCP939.cs" />
+    <Compile Include="patches\EscapePatch.cs" />
+    <Compile Include="patches\SCP096.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

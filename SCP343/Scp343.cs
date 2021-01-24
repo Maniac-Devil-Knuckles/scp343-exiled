@@ -1,3 +1,4 @@
+﻿
 using System;
 using Exiled;
 using Exiled.API;
@@ -15,6 +16,8 @@ using WARHEAD = Exiled.Events.Handlers.Warhead;
 using Exiled.API.Enums;
 using HarmonyLib;
 using System.Collections.Generic;
+using Exiled.Loader;
+using System.Linq;
 
 namespace SCP343
 {
@@ -29,13 +32,23 @@ namespace SCP343
 		public override string Name => "SCP-343";
         public override string Prefix => "SCP-343";
         public override string Author => "Maniac Devil Knuckles";
-		public override Version Version { get; } = new Version(1, 3, 0);
-
+		public override Version Version { get; } = new Version(1, 3, 0);    
         public override PluginPriority Priority => PluginPriority.Highest;
-
+        public Harmony harmony { get; set; } = null;
         public SCP343() { }
-		public override void OnEnabled() //22>19
+        public static bool IsEnabledPluginAdvancedSubclassing = Loader.Plugins.Any(p=>p.Name=="Subclass"&&p.Config.IsEnabled);
+        public override void OnEnabled() //22>19
 		{
+            try
+            {
+                Log.Info("cool");
+                harmony = new Harmony("knuckles.scp343");
+                harmony.PatchAll();
+            } catch(Exception ex)
+            {
+                Log.Info("error\n\n\n\n\n\n\n\\n\n");
+                Log.Info(ex.Message);//
+            }
 			players = new Players(this);
             Log.Info("Enabling SCP343 by Maniac Devil Knuckles");
             Server.EndingRound += players.OnRoundEnding;
@@ -64,9 +77,11 @@ namespace SCP343
             Server.RestartingRound += players.OnRestartingRound;
         }
 
-		public override void OnDisabled()
+        public override void OnDisabled()
 		{
             Log.Info("Disabling SCP343 by Maniac Devil Knuckles");
+            harmony.UnpatchAll();
+            harmony = null;
             Player.ChangingRole -= players.OnChangingRole;
             Player.TriggeringTesla -= players.OnTriggeringTesla;
             Server.RoundStarted -= players.OnRoundStarted;
@@ -88,7 +103,6 @@ namespace SCP343
             Player.EnteringPocketDimension -= players.OnEnteringPocketDimension;
             players = null; ;
         }
-
-		public override void OnReloaded() { }
+        public override void OnReloaded() { }
 	}
 }

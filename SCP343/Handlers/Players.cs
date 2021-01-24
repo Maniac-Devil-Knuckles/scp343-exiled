@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Interactables.Interobjects.DoorUtils;
 using System.Collections.Generic;
 using Exiled.API.Features;
@@ -62,6 +62,7 @@ namespace SCP343.HandlersPl
 
         public void OnCommand(SendingRemoteAdminCommandEventArgs ev)
         {
+
             //Log.Info(ev.Name);
             if (ev.Name.ToLower() == "spawn343")
             {
@@ -112,6 +113,7 @@ namespace SCP343.HandlersPl
                                 IsOpenAll.Remove(PlayerId);
                                 IsOpenAll.Add(PlayerId, true);
                             });
+                            
                             Timing.CallDelayed(plugin.Config.scp343_hecktime, () =>
                             {
                                 hecktime.Remove(PlayerId);
@@ -248,7 +250,7 @@ namespace SCP343.HandlersPl
             IsOpenAll.Clear();
             hecktime.Clear();
             colorbadge.Clear();
-            namebadge.Clear();
+            namebadge.Clear();  
         }
         public void OnRoundStarted()
         {
@@ -270,12 +272,25 @@ namespace SCP343.HandlersPl
                 if (play.Role == RoleType.ClassD) ClassDList.Add(play);
             }
             Player player = ClassDList[RNG.Next(ClassDList.Count)];
+            spawn343(player);
+            try
+            {
+                if (IsEnabledPluginAdvancedSubclassing)
+                {
+                    Subclass.API.RemoveClass(player);
+                }
+                
+            } catch(Exception ex)
+            {
+                Log.Debug(ex, false);
+            }
+            
+        }//
+        void spawn343(Player player)
+        {
             API.scp343.Add(player);
             Active343AndBadgeDict.Add(player.Id);
-            //player.SetRole(RoleType.ClassD,false,true);
             player.ClearInventory();
-            //player.Group.BadgeColor = "red";
-            //player.Group.BadgeText = "scp-343";
             colorbadge.Add(player.Id, player.ReferenceHub.serverRoles.NetworkMyColor);
             namebadge.Add(player.Id, player.ReferenceHub.serverRoles.NetworkMyText);
             player.ReferenceHub.serverRoles.NetworkMyColor = "red";
@@ -291,14 +306,14 @@ namespace SCP343.HandlersPl
             {
                 player.ClearInventory();
                 foreach (int item in plugin.Config.scp343_itemsatspawn) player.AddItem((ItemType)item);
-                hecktime.Add(player.Id,true);
-                IsOpenAll.Add(player.Id,false);
+                hecktime.Add(player.Id, true);
+                IsOpenAll.Add(player.Id, false);
                 Active343AndBadgeDict.Add(player.Id);
                 player.EnableEffect(Exiled.API.Enums.EffectType.Scp207, 10000000000);
                 player.EnableEffect(Exiled.API.Enums.EffectType.Scp207, 10000000000, true);
                 player.Health = 100f;
             });
-            Timing.CallDelayed(plugin.Config.scp343_opendoortime, ()=> {
+            Timing.CallDelayed(plugin.Config.scp343_opendoortime, () => {
                 IsOpenAll.Remove(player.Id);
                 IsOpenAll.Add(player.Id, true);
             });
@@ -307,7 +322,7 @@ namespace SCP343.HandlersPl
                 hecktime.Remove(player.Id);
                 hecktime.Add(player.Id, false);
             });
-        }//
+        }
 
         public void OnInteractingDoor(InteractingDoorEventArgs ev)
         {

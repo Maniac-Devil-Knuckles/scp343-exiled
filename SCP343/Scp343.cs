@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using Exiled;
 using Exiled.API;
@@ -13,6 +13,7 @@ using Server = Exiled.Events.Handlers.Server;
 using Scps914 = Exiled.Events.Handlers.Scp914;
 using SCP106 = Exiled.Events.Handlers.Scp106;
 using WARHEAD = Exiled.Events.Handlers.Warhead;
+using SCP096 = Exiled.Events.Handlers.Scp096;
 using Exiled.API.Enums;
 using HarmonyLib;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ namespace SCP343
         public override PluginPriority Priority => PluginPriority.Highest;
         public Harmony harmony { get; set; } = null;
         public SCP343() { }
-        public static bool IsEnabledPluginAdvancedSubclassing = Loader.Plugins.Any(p=>p.Name=="Subclass"&&p.Config.IsEnabled);
+        //public static bool IsEnabledPluginAdvancedSubclassing => Loader.Plugins.Any(p => p.Name == "Subclass" && p.Config.IsEnabled);
         public override void OnEnabled() //22>19
 		{
             try
@@ -75,6 +76,8 @@ namespace SCP343
             Player.InteractingElevator += players.OnInteractingElevator;
             Server.RoundEnded += players.OnRoundEnd;
             Server.RestartingRound += players.OnRestartingRound;
+            SCP096.AddingTarget += players.OnAddingTarget;
+            SCP096.Enraging += players.OnEnraging;
         }
 
         public override void OnDisabled()
@@ -101,6 +104,7 @@ namespace SCP343
             WARHEAD.Stopping -= players.OnStopping;
             Player.ActivatingWarheadPanel -= players.OnActivatingWarheadPanel;
             Player.EnteringPocketDimension -= players.OnEnteringPocketDimension;
+            
             players = null; ;
         }
         public override void OnReloaded() { }

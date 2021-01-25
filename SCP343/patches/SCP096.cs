@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Exiled.API.Features;
 using HarmonyLib;
 using UnityEngine;
@@ -10,7 +10,7 @@ namespace SCP343.Patches
     {
         public static bool Prefix(GameObject target)
         {
-            return !HandlersPl.Players.Active343AndBadgeDict.Contains(Player.Get(target).Id);
+            return !Player.Get(target).IsSCP343();
         }
     }
 }

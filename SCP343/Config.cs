@@ -16,6 +16,11 @@ namespace SCP343
         //[Obsolete("Use IsEnabled",true)]
         //public bool scp343_disable { get; set; } = false;
 
+        [Description("scp343 can escape?")]
+        public bool scp343_canescape = false;
+
+        [Description("scp343 can open doors?")]
+        public bool scp343_canopenanydoor = true;
 
         [Description("What broadcasted who become scp343")]
         public string scp343_alerttext { get; set; } = "You're SCP-343! Check your console for more information about SCP-343.";
@@ -52,7 +57,7 @@ namespace SCP343
         public int minplayers { get; set; } = 1;
         [Description("What give scp-343 on spawn")]
         public int[] scp343_itemsatspawn { get; set; } = new int[] { 15 };
-        [Description("Moving Speed lift")]
+        [Description("Moving Speed lift for all players")]
         public float lift_moving_speed { get; set; } = 6.5f;
     }
 }

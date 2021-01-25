@@ -1,4 +1,4 @@
-
+﻿
 using System;
 using Exiled;
 using Exiled.API;
@@ -25,21 +25,28 @@ namespace SCP343
     public class API
     {
         public static List<Exiled.API.Features.Player> scp343 = new List<Exiled.API.Features.Player>();
+        public static void spawn343(Exiled.API.Features.Player player)
+        {
+            SCP343.players.spawn343(player);
+            SCP343.players.tryplugin(player);
+        }
     }
 
     public class SCP343 : Plugin<Config>
     {
-		public Players players { get; private set; }
+		public static Players players { get; private set; }
 		public override string Name => "SCP-343";
         public override string Prefix => "SCP-343";
         public override string Author => "Maniac Devil Knuckles";
 		public override Version Version { get; } = new Version(1, 3, 0);    
         public override PluginPriority Priority => PluginPriority.Highest;
+        public static SCP343 instance;
         public Harmony harmony { get; set; } = null;
         public SCP343() { }
         //public static bool IsEnabledPluginAdvancedSubclassing => Loader.Plugins.Any(p => p.Name == "Subclass" && p.Config.IsEnabled);
         public override void OnEnabled() //22>19
 		{
+            instance = this;
             try
             {
                 Log.Info("cool");
@@ -72,7 +79,7 @@ namespace SCP343
             WARHEAD.Stopping += players.OnStopping;
             Player.ActivatingWarheadPanel += players.OnActivatingWarheadPanel;
             Player.EnteringPocketDimension += players.OnEnteringPocketDimension;
-            Server.SendingRemoteAdminCommand += players.OnCommand;
+            //Server.SendingRemoteAdminCommand += players.OnCommand;
             Player.InteractingElevator += players.OnInteractingElevator;
             Server.RoundEnded += players.OnRoundEnd;
             Server.RestartingRound += players.OnRestartingRound;

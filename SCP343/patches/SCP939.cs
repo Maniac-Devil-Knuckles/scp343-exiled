@@ -11,7 +11,7 @@ namespace SCP343.Patches
 		public static void Postfix(Scp939PlayerScript __instance, GameObject target)
 		{
 			Player player = Player.Get(target);
-			if (API.scp343.Contains(player))
+			if (player.IsSCP343())
 			{
 				player.ReferenceHub.playerEffectsController.DisableEffect<CustomPlayerEffects.Amnesia>();
 			}

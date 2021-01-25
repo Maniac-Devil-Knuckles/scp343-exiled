@@ -10,7 +10,7 @@ namespace SCP343.Patches
 	{
 		public static bool Prefix(CharacterClassManager __instance)
 		{
-			if (!Player.Get(((NetworkBehaviour)__instance).gameObject).IsSCP343()) return false;
+			if (!Player.Get(((NetworkBehaviour)__instance).gameObject).IsSCP343()) return true;
 			return SCP343.instance.Config.scp343_canescape;
 		}
 	}

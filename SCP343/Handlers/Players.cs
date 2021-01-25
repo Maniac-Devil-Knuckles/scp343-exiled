@@ -207,11 +207,20 @@ namespace SCP343.HandlersPl
             {
                 Active343AndBadgeDict.Remove(player.Id);
                 API.scp343.Remove(player);
+                if (colorbadge.TryGetValue(ev.Target.Id, out string color)) ev.Target.ReferenceHub.serverRoles.NetworkMyColor = color;
+                if (namebadge.TryGetValue(ev.Target.Id, out string name)) ev.Target.ReferenceHub.serverRoles.NetworkMyText = name;
+                if (ev.Target.Group.HiddenByDefault) ev.Target.BadgeHidden = true;
+                colorbadge.Remove(ev.Target.Id);
+                namebadge.Remove(ev.Target.Id);
+                IsOpenAll.Remove(ev.Target.Id);
+                hecktime.Remove(ev.Target.Id);
             }
-
         }
         Random RNG = new Random();
-
+        public void OnBlinking(BlinkingEventArgs ev)
+        {
+            ev.Targets.RemoveAll(e => !e.IsSCP343());
+        }
         public void OnHurting(HurtingEventArgs ev)
         {
             if(Active343AndBadgeDict.Contains(ev.Target.Id))

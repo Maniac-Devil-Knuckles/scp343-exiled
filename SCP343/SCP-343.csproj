@@ -84,6 +84,7 @@
     <Compile Include="patches\SCP096.cs" />
     <Compile Include="ExtentionMethods.cs" />
     <Compile Include="Commands\Spawn343.cs" />
+    <Compile Include="patches\SCP173.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

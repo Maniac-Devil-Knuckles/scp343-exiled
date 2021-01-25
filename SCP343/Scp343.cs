@@ -24,7 +24,7 @@ namespace SCP343
 {
     public class API
     {
-        public static List<Exiled.API.Features.Player> scp343 = new List<Exiled.API.Features.Player>();
+        public static List<Exiled.API.Features.Player> scp343 { get; set; } = new List<Exiled.API.Features.Player>();
         public static void spawn343(Exiled.API.Features.Player player)
         {
             SCP343.players.spawn343(player);
@@ -65,7 +65,7 @@ namespace SCP343
             Server.RoundStarted += players.OnRoundStarted;
             Player.Died += players.OnDied;
             Player.Hurting += players.OnHurting;
-            Player.Escaping += players.OnEscaping;
+            //Player.Escaping += players.OnEscaping;
             Player.UnlockingGenerator += players.OnUnlockingGenerator;
             Scps914.Activating += players.OnActivating;
             SCP106.Containing += players.OnContaining;
@@ -85,6 +85,7 @@ namespace SCP343
             Server.RestartingRound += players.OnRestartingRound;
             SCP096.AddingTarget += players.OnAddingTarget;
             SCP096.Enraging += players.OnEnraging;
+            Exiled.Events.Handlers.Scp173.Blinking+=players.OnBlinking;
         }
 
         public override void OnDisabled()

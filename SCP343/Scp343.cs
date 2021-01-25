@@ -30,6 +30,7 @@ namespace SCP343
             SCP343.players.spawn343(player);
             SCP343.players.tryplugin(player);
         }
+        public static void Kill343(Exiled.API.Features.Player player) => SCP343.players.KillSCP343(player);
     }
 
     public class SCP343 : Plugin<Config>

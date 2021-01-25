@@ -33,6 +33,10 @@ namespace SCP343.HandlersPl
         }
         public void OnRoundEnd(RoundEndedEventArgs ev)
         {
+            foreach(var id in Active343AndBadgeDict)
+            {
+                KillSCP343(Player.Get(id));
+            }
             Active343AndBadgeDict.Clear();
             colorbadge.Clear();
             hecktime.Clear();
@@ -61,61 +65,6 @@ namespace SCP343.HandlersPl
                 else if (mtf.Count == 0 && classd.Count == 0 && scps.Count == 0 && chaos.Count == 0) ev.IsRoundEnded = true;
             }
         }
-        /*public void OnCommand(SendingRemoteAdminCommandEventArgs ev)
-        {
-
-            //Log.Info(ev.Name);
-            if (aliases.IndexOf(ev.Name.ToLower())>-1)
-            {
-                ev.IsAllowed = false;
-                ev.Success = true;
-                //Log.Info(ev.Arguments.Count);
-                try {
-                    if (ev.Arguments.Count < 1)
-                    {
-                        ev.ReplyMessage = $"Usage command : \"{ev.Name.ToLower()} PlayerId\"";
-                        return;
-                    }
-                    if (ev.Arguments.TryGet(0, out string str))
-                    {
-                        if (int.TryParse(str, out int PlayerId))
-                        {
-                            if (PlayerId < 2)
-                            {
-                                ev.ReplyMessage = $"Usage command : \"{ev.Name.ToLower()} PlayerId\"";
-                                return;
-                            }
-                            Player player = Player.Get(PlayerId);
-                            //Log.Info(player.UserId);
-                            if (player == null)
-                            {
-                                ev.ReplyMessage = "Incorrect PlayerId";
-                                return;
-                            }
-                            if(player.IsSCP343())
-                            {
-                                ev.ReplyMessage = "This player already scp343";
-                                return;
-                            }
-                            player.SetRole(RoleType.ClassD, false, true);
-                            Timing.CallDelayed(0.5f, () =>
-                            {
-                                spawn343(player);
-                                tryplugin(player);
-                            });
-                            ev.ReplyMessage = $"Made {player.Nickname} SCP-343";
-                            return;
-                        }
-                    }
-                    ev.ReplyMessage = $"Usage command : \"{ev.Name.ToLower()} PlayerId\""; ;
-                    return;
-                } catch(Exception ex)
-                {
-                    ev.ReplyMessage = ex.Message;
-                    Log.Info(ex);
-                }
-                } 
-        }//*/
 
         public void OnSendingConsoleCommand(SendingConsoleCommandEventArgs ev)
         {
@@ -131,15 +80,7 @@ namespace SCP343.HandlersPl
                         {
                             ev.Player.SetRole(RoleType.ClassD);
                             ev.Player.DisableAllEffects();
-                            
-                            if (colorbadge.TryGetValue(ev.Player.Id, out string color)) ev.Player.ReferenceHub.serverRoles.NetworkMyColor = color;
-                            if (namebadge.TryGetValue(ev.Player.Id, out string name)) ev.Player.ReferenceHub.serverRoles.NetworkMyText = name;
-                            colorbadge.Remove(ev.Player.Id);
-                            namebadge.Remove(ev.Player.Id);
-                            IsOpenAll.Remove(ev.Player.Id);
-                            hecktime.Remove(ev.Player.Id);
-                            Active343AndBadgeDict.Remove(ev.Player.Id);
-                            API.scp343.Remove(ev.Player);
+                            KillSCP343(ev.Player);
                             if (plugin.Config.scp343_alert) ev.Player.Broadcast(10, plugin.Config.scp343_alertbackd);
                             ev.ReturnMessage = plugin.Config.scp343_alertbackd;
                             return;
@@ -203,18 +144,24 @@ namespace SCP343.HandlersPl
         public void OnDied(DiedEventArgs ev)
         {
             Player player = ev.Target;
-            if (Active343AndBadgeDict.Contains(player.Id))
+            if (player.IsSCP343())
             {
-                Active343AndBadgeDict.Remove(player.Id);
-                API.scp343.Remove(player);
-                if (colorbadge.TryGetValue(ev.Target.Id, out string color)) ev.Target.ReferenceHub.serverRoles.NetworkMyColor = color;
-                if (namebadge.TryGetValue(ev.Target.Id, out string name)) ev.Target.ReferenceHub.serverRoles.NetworkMyText = name;
-                if (ev.Target.Group.HiddenByDefault) ev.Target.BadgeHidden = true;
-                colorbadge.Remove(ev.Target.Id);
-                namebadge.Remove(ev.Target.Id);
-                IsOpenAll.Remove(ev.Target.Id);
-                hecktime.Remove(ev.Target.Id);
+
+                KillSCP343(player);
             }
+        }
+        public void KillSCP343(Player player)
+        {
+            if (!player.IsSCP343()) return;
+            Active343AndBadgeDict.Remove(player.Id);
+            API.scp343.Remove(player);
+            if (colorbadge.TryGetValue(player.Id, out string color)) player.SetBadgeColor(color);
+            if (namebadge.TryGetValue(player.Id, out string name)) player.SetBadgeName(name);
+            if ((bool)(player.Group?.HiddenByDefault)) player.BadgeHidden = true;
+            colorbadge.Remove(player.Id);
+            namebadge.Remove(player.Id);
+            IsOpenAll.Remove(player.Id);
+            hecktime.Remove(player.Id);
         }
         Random RNG = new Random();
         public void OnBlinking(BlinkingEventArgs ev)
@@ -223,7 +170,7 @@ namespace SCP343.HandlersPl
         }
         public void OnHurting(HurtingEventArgs ev)
         {
-            if(Active343AndBadgeDict.Contains(ev.Target.Id))
+            if(ev.Target.IsSCP343())
             {
                 if (ev.DamageType == DamageTypes.Decont || ev.DamageType == DamageTypes.Nuke)
                 {
@@ -231,7 +178,7 @@ namespace SCP343.HandlersPl
                     return;
                 }else ev.Amount = 0f;
             }
-            if (Active343AndBadgeDict.Contains(ev.Attacker.Id)) ev.Amount = 0;
+            if (ev.Attacker.IsSCP343()) ev.Amount = 0;
         }
         public void OnRestartingRound()
         {
@@ -289,23 +236,15 @@ namespace SCP343.HandlersPl
         {
             if(scp0492)
             {
-                API.scp343.Remove(player);
-                Active343AndBadgeDict.Remove(player.Id);
-                //Log.Info(namebadge[ev.Player.Id]);
-                if (colorbadge.TryGetValue(player.Id, out string color)) player.ReferenceHub.serverRoles.NetworkMyColor = color;
-                if (namebadge.TryGetValue(player.Id, out string name)) player.ReferenceHub.serverRoles.NetworkMyText = name;
-                colorbadge.Remove(player.Id);
-                namebadge.Remove(player.Id);
-                if(plugin.Config.scp343_canopenanydoor) IsOpenAll.Remove(player.Id);
-                hecktime.Remove(player.Id);
+                KillSCP343(player);
             }
             if(player.BadgeHidden) player.BadgeHidden = false;
             API.scp343.Add(player);
             Active343AndBadgeDict.Add(player.Id);
-            colorbadge.Add(player.Id, player.ReferenceHub.serverRoles.NetworkMyColor);
-            namebadge.Add(player.Id, player.ReferenceHub.serverRoles.NetworkMyText);
-            player.ReferenceHub.serverRoles.NetworkMyColor = "red";
-            player.ReferenceHub.serverRoles.NetworkMyText = "SCP-343";
+            colorbadge.Add(player.Id, player.GetBadgeColor());
+            namebadge.Add(player.Id, player.GetBadgeName());
+            player.SetBadgeColor("red");
+            player.SetBadgeName("SCP-343");
             if (plugin.Config.scp343_alert&&!scp0492)
             {
                 player.ClearBroadcasts();
@@ -358,16 +297,7 @@ namespace SCP343.HandlersPl
             }
             if (ev.Player.IsSCP343()&&ev.NewRole!=RoleType.Scp0492)
             {
-                API.scp343.Remove(ev.Player);
-                Active343AndBadgeDict.Remove(ev.Player.Id);
-                //Log.Info(namebadge[ev.Player.Id]);
-                if (colorbadge.TryGetValue(ev.Player.Id,out string color)) ev.Player.ReferenceHub.serverRoles.NetworkMyColor=color;
-                if(namebadge.TryGetValue(ev.Player.Id, out string name)) ev.Player.ReferenceHub.serverRoles.NetworkMyText = name;
-                if (ev.Player.Group.HiddenByDefault) ev.Player.BadgeHidden = true;
-                colorbadge.Remove(ev.Player.Id);
-                namebadge.Remove(ev.Player.Id);
-                IsOpenAll.Remove(ev.Player.Id);
-                hecktime.Remove(ev.Player.Id);
+                KillSCP343(ev.Player);
             } else if(ev.Player.IsSCP343() && ev.NewRole == RoleType.Scp0492)
             {
                 ev.NewRole = RoleType.ClassD;

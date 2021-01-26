@@ -21,8 +21,8 @@ namespace SCP343
 
         [Description("scp343 can open doors?")]
         public bool scp343_canopenanydoor { get; set; } = true;
-        [Description("Can scp343 stop scp173?")]
-        public bool scp343_canstopscp173 { get; set; } = false;
+        //[Description("Can scp343 stop scp173?")]
+        //public bool scp343_canstopscp173 { get; set; } = false;
 
         [Description("What broadcasted who become scp343")]
         public string scp343_alerttext { get; set; } = "You're SCP-343! Check your console for more information about SCP-343.";

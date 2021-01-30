@@ -6,7 +6,7 @@ namespace SCP343
     {
         internal static bool IsSCP343(this Player player)
         {
-            return HandlersPl.Players.Active343AndBadgeDict.Contains(player.Id);
+            return HandlersPl.Players.Active343.Contains(player.Id);
         }
         internal static string GetBadgeName (this Player player)
         {

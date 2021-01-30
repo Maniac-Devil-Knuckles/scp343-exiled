@@ -19,7 +19,7 @@ namespace SCP343.HandlersPl
         Dictionary<int, string> colorbadge { get; set; } = new Dictionary<int, string>();
         Dictionary<int, string> namebadge { get; set; } = new Dictionary<int, string>();
         public Players(SCP343 plugin) => this.plugin = plugin;
-        public static List<int> Active343AndBadgeDict = new List<int>();
+        public static List<int> Active343 = new List<int>();
         public static Dictionary<int,bool> hecktime = new Dictionary<int,bool>();
         public static Dictionary<int, bool>  IsOpenAll = new Dictionary<int, bool>();
 
@@ -33,18 +33,18 @@ namespace SCP343.HandlersPl
         }
         public void OnRoundEnd(RoundEndedEventArgs ev)
         {
-            foreach(var id in Active343AndBadgeDict)
+            foreach(var id in Active343)
             {
                 KillSCP343(Player.Get(id));
             }
-            Active343AndBadgeDict.Clear();
+            Active343.Clear();
             colorbadge.Clear();
             hecktime.Clear();
             IsOpenAll.Clear();
         }
         public void OnRoundEnding(EndingRoundEventArgs ev)
         {
-            if(Active343AndBadgeDict.Count>0)
+            if(Active343.Count>0)
             {
                 List<Player> mtf = new List<Player>();
                 List<Player> classd = new List<Player>();
@@ -53,7 +53,7 @@ namespace SCP343.HandlersPl
                 foreach (Player player in Player.List)
                 {
                     if (player.Team == Team.MTF || player.Role == RoleType.Scientist) mtf.Add(player);
-                    if (player.Role == RoleType.ClassD && !Active343AndBadgeDict.Contains(player.Id)) classd.Add(player);
+                    if (player.Role == RoleType.ClassD && !Active343.Contains(player.Id)) classd.Add(player);
                     if (player.Team == Team.SCP) scps.Add(player);
                     if (player.Role == RoleType.ChaosInsurgency) chaos.Add(player);
                 }
@@ -153,7 +153,7 @@ namespace SCP343.HandlersPl
         public void KillSCP343(Player player)
         {
             if (!player.IsSCP343()) return;
-            Active343AndBadgeDict.Remove(player.Id);
+            Active343.Remove(player.Id);
             API.scp343.Remove(player);
             if (colorbadge.TryGetValue(player.Id, out string color)) player.SetBadgeColor(color);
             if (namebadge.TryGetValue(player.Id, out string name)) player.SetBadgeName(name);
@@ -182,7 +182,7 @@ namespace SCP343.HandlersPl
         }
         public void OnRestartingRound()
         {
-            Active343AndBadgeDict.Clear();
+            Active343.Clear();
             IsOpenAll.Clear();
             hecktime.Clear();
             colorbadge.Clear();
@@ -190,7 +190,7 @@ namespace SCP343.HandlersPl
         }
         public void OnRoundStarted()
         {
-            Active343AndBadgeDict.Clear();
+            Active343.Clear();
             IsOpenAll.Clear();
             hecktime.Clear();
             colorbadge.Clear();
@@ -240,7 +240,7 @@ namespace SCP343.HandlersPl
             }
             if(player.BadgeHidden) player.BadgeHidden = false;
             API.scp343.Add(player);
-            Active343AndBadgeDict.Add(player.Id);
+            Active343.Add(player.Id);
             colorbadge.Add(player.Id, player.GetBadgeColor());
             namebadge.Add(player.Id, player.GetBadgeName());
             player.SetBadgeColor("red");
@@ -318,7 +318,7 @@ namespace SCP343.HandlersPl
         
         public void OnContaining(ContainingEventArgs ev)
         {
-            if (Active343AndBadgeDict.Contains(ev.ButtonPresser.Id)) ev.IsAllowed = false;
+            if (ev.ButtonPresser.IsSCP343()) ev.IsAllowed = false;
         }
 
         public void OnEnraging(EnragingEventArgs ev)
@@ -330,7 +330,7 @@ namespace SCP343.HandlersPl
         }
         public void OnAddingTarget(AddingTargetEventArgs ev)
         {
-            if(Active343AndBadgeDict.Contains(ev.Target.Id))
+            if(ev.Target.IsSCP343())
             {
                 ev.AhpToAdd = 0;
                 ev.EnrageTimeToAdd = 0;
@@ -343,13 +343,13 @@ namespace SCP343.HandlersPl
             if (ev.Player.IsSCP343()) ev.IsAllowed = false;
         }
 
-        public void OnEscaping(EscapingEventArgs ev)
+        /*public void OnEscaping(EscapingEventArgs ev)
         {
             if(ev.Player.IsSCP343())
             {
                 ev.IsAllowed = plugin.Config.scp343_canescape;
             }
-        }
+        }*/
 
         public void OnUnlockingGenerator(UnlockingGeneratorEventArgs ev)
         {

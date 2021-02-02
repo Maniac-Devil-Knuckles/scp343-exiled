@@ -32,22 +32,22 @@
       <HintPath>..\..\..\Downloads\Exiled\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Exiled.Loader">
-      <HintPath>..\..\..\Downloads\Exiled\EXILED\Exiled.Loader.dll</HintPath>
+      <HintPath>..\packages\EXILED.2.1.30\lib\net472\Exiled.Loader.dll</HintPath>
     </Reference>
     <Reference Include="Exiled.Events">
-      <HintPath>..\..\..\Downloads\Exiled\EXILED\Plugins\Exiled.Events.dll</HintPath>
+      <HintPath>..\packages\EXILED.2.1.30\lib\net472\Exiled.Events.dll</HintPath>
     </Reference>
     <Reference Include="Exiled.Permissions">
-      <HintPath>..\..\..\Downloads\Exiled\EXILED\Plugins\Exiled.Permissions.dll</HintPath>
+      <HintPath>..\packages\EXILED.2.1.30\lib\net472\Exiled.Permissions.dll</HintPath>
     </Reference>
     <Reference Include="Exiled.Updater">
-      <HintPath>..\..\..\Downloads\Exiled\EXILED\Plugins\Exiled.Updater.dll</HintPath>
+      <HintPath>..\packages\EXILED.2.1.30\lib\net472\Exiled.Updater.dll</HintPath>
     </Reference>
     <Reference Include="0Harmony">
       <HintPath>..\..\..\Downloads\Exiled\EXILED\Plugins\dependencies\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Exiled.API">
-      <HintPath>..\..\..\Downloads\Exiled\EXILED\Plugins\dependencies\Exiled.API.dll</HintPath>
+      <HintPath>..\packages\EXILED.2.1.30\lib\net472\Exiled.API.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations">
       <HintPath>..\..\..\Downloads\Exiled\EXILED\Plugins\dependencies\System.ComponentModel.DataAnnotations.dll</HintPath>
@@ -73,6 +73,9 @@
     <Reference Include="NorthwoodLib">
       <HintPath>..\..\..\..\..\Volumes\SCP-343-1.4.3\RemoteKeycard-1.4.1-3.6.0\dependencies\NorthwoodLib.dll</HintPath>
     </Reference>
+    <Reference Include="Exiled.Bootstrap">
+      <HintPath>..\packages\EXILED.2.1.30\lib\net472\Exiled.Bootstrap.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Scp343.cs" />
@@ -84,7 +87,9 @@
     <Compile Include="patches\SCP096.cs" />
     <Compile Include="ExtentionMethods.cs" />
     <Compile Include="Commands\Spawn343.cs" />
-    <Compile Include="patches\SCP173.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

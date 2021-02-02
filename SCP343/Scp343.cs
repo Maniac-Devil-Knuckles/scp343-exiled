@@ -24,7 +24,16 @@ namespace SCP343
 {
     public class API
     {
-        public static List<Exiled.API.Features.Player> scp343 { get; set; } = new List<Exiled.API.Features.Player>();
+        public static Dictionary<int,Exiled.API.Features.Player> scp343 { get
+            {
+                Dictionary<int, Exiled.API.Features.Player> l = new Dictionary<int, Exiled.API.Features.Player>();
+                foreach (Exiled.API.Features.Player p in Exiled.API.Features.Player.List)
+                {
+                    if (p.IsSCP343()) l.Add(p.Id,p);
+                }
+                return l;
+            }
+        }
         public static void spawn343(Exiled.API.Features.Player player)
         {
             SCP343.players.spawn343(player);
@@ -99,7 +108,8 @@ namespace SCP343
             Server.RoundStarted -= players.OnRoundStarted;
             Player.Died -= players.OnDied;
             Player.Hurting -= players.OnHurting;
-            Player.Escaping -= players.OnEscaping;
+            Player.Destroying += players.OnDestroyingEvent;
+            //Player.Escaping -= players.OnEscaping;
             Player.UnlockingGenerator -= players.OnUnlockingGenerator;
             Scps914.Activating -= players.OnActivating;
             SCP106.Containing -= players.OnContaining;

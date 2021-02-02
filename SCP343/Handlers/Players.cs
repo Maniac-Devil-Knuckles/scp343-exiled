@@ -1,5 +1,4 @@
-﻿using System;
-using Interactables.Interobjects.DoorUtils;
+using System;
 using System.Collections.Generic;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
@@ -8,7 +7,6 @@ using static SCP343.SCP343;
 using MEC;
 using System.Linq;
 using Random = System.Random;
-using RemoteAdmin;
 
 namespace SCP343.HandlersPl
 {
@@ -282,7 +280,6 @@ namespace SCP343.HandlersPl
 
         public void OnInteractingDoor(InteractingDoorEventArgs ev)
         {
-            if (ev.IsAllowed) return;
             bool allowed = IsOpenAll.TryGetValue(ev.Player.Id, out bool isOpened);
             if (!allowed) return;
             if (ev.Player.IsSCP343() && isOpened)
@@ -323,6 +320,7 @@ namespace SCP343.HandlersPl
         public void OnDestroyingEvent(DestroyingEventArgs ev)
         {
             if (ev.Player.Id == Server.Host.Id) return;
+            if(ev.Player == null || !ev.Player.IsVerified || ev.Player.IPAddress == "127.0.0.WAN" || ev.Player.IPAddress == "127.0.0.1") return;
             if (ev.Player.IsSCP343()) KillSCP343(ev.Player);
         }
 

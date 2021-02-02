@@ -158,8 +158,8 @@ namespace SCP343.HandlersPl
             if (!player.IsSCP343()) return;
             Active343.Remove(player.Id);
             //API.scp343.Remove(player);
-            if (colorbadge.TryGetValue(player.Id, out string color)) player.SetBadgeColor(color);
-            if (namebadge.TryGetValue(player.Id, out string name)) player.SetBadgeName(name);
+            if (colorbadge.TryGetValue(player.Id, out string color)) player.RankColor = color;
+            if (namebadge.TryGetValue(player.Id, out string name)) player.RankName=name;
             if ((bool)(player.Group?.HiddenByDefault)) player.BadgeHidden = true;
             colorbadge.Remove(player.Id);
             namebadge.Remove(player.Id);
@@ -233,7 +233,7 @@ namespace SCP343.HandlersPl
             }
             catch (Exception ex)
             {
-                Log.Debug(ex, false);
+                Log.Debug(ex, instance.Config.Debug);
             }
         }
         public void spawn343(Player player, bool scp0492 = false)
@@ -245,10 +245,10 @@ namespace SCP343.HandlersPl
             if (player.BadgeHidden) player.BadgeHidden = false;
             //API.scp343.Add(player);
             Active343.Add(player.Id);
-            colorbadge.Add(player.Id, player.GetBadgeColor());
-            namebadge.Add(player.Id, player.GetBadgeName());
-            player.SetBadgeColor("red");
-            player.SetBadgeName("SCP-343");
+            colorbadge.Add(player.Id, player.RankColor);
+            namebadge.Add(player.Id, player.RankName);
+            player.RankColor="red";
+            player.RankName="SCP-343";
             if (plugin.Config.scp343_alert && !scp0492)
             {
                 player.ClearBroadcasts();
@@ -296,7 +296,7 @@ namespace SCP343.HandlersPl
             List<ItemType> items = new List<ItemType>();
             foreach (var ite in ev.Player.Inventory.items)
             {
-                Log.Debug(ite.id, false);
+                Log.Debug("Items "+ite.id, instance.Config.Debug);
                 items.Add(ite.id);
             }
             if (ev.Player.IsSCP343() && ev.NewRole != RoleType.Scp0492)

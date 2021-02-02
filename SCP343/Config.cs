@@ -12,6 +12,9 @@ namespace SCP343
 
         [Description("Indicates whether the plugin is enabled or not")]
         public bool IsEnabled { get; set; } = true;
+
+        [Description("Will log some error debug or debug some test features")]
+        public bool Debug { get; set; } = false;
         //[Description("!(Indicates whether the plugin is enabled or not)")]
         //[Obsolete("Use IsEnabled",true)]
         //public bool scp343_disable { get; set; } = false;

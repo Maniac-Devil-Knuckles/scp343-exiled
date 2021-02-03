@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
@@ -209,11 +209,11 @@ namespace SCP343.HandlersPl
         }
         public void spawn343(Player player, bool scp0492 = false)
         {
-            if (player.IsSCP343()) return;
             if (scp0492)
             {
                 KillSCP343(player);
             }
+            if (player.IsSCP343()) return;
             if (player.BadgeHidden) player.BadgeHidden = false;
             scp343badge = new scp343badge(player);
             player.Id = 343;

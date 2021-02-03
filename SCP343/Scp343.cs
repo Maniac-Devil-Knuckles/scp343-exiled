@@ -24,15 +24,13 @@ namespace SCP343
 {
     public class API
     {
-        public static Dictionary<int,Exiled.API.Features.Player> scp343 { get
-            {
-                Dictionary<int, Exiled.API.Features.Player> l = new Dictionary<int, Exiled.API.Features.Player>();
+        public static Exiled.API.Features.Player GetSCP343() {
+                Exiled.API.Features.Player l = null;
                 foreach (Exiled.API.Features.Player p in Exiled.API.Features.Player.List)
                 {
-                    if (p.IsSCP343()) l.Add(p.Id,p);
+                    if (p.IsSCP343()) l = p;
                 }
                 return l;
-            }
         }
         public static void spawn343(Exiled.API.Features.Player player)
         {
@@ -53,6 +51,7 @@ namespace SCP343
         public override PluginPriority Priority => PluginPriority.Highest;
         public static SCP343 instance;
         public Harmony harmony { get; set; } = null;
+        private int i { get; set; } = 0;
         public SCP343() { }
         //public static bool IsEnabledPluginAdvancedSubclassing => Loader.Plugins.Any(p => p.Name == "Subclass" && p.Config.IsEnabled);
         public override void OnEnabled() //22>19
@@ -60,9 +59,9 @@ namespace SCP343
             instance = this;
             try
             {
-                Log.Info("cool");
-                harmony = new Harmony("knuckles.scp343");
+                harmony = new Harmony("knuckles.scp343\nVersion" + i++);
                 harmony.PatchAll();
+                Log.Info("cool");
             } catch(Exception ex)
             {
                 Log.Info("error\n\n\n\n\n\n\n\\n\n");

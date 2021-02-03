@@ -15,17 +15,14 @@ namespace SCP343
 
         [Description("Will log some error debug or debug some test features")]
         public bool Debug { get; set; } = false;
-        //[Description("!(Indicates whether the plugin is enabled or not)")]
-        //[Obsolete("Use IsEnabled",true)]
-        //public bool scp343_disable { get; set; } = false;
 
         [Description("scp343 can escape?")]
         public bool scp343_canescape { get; set; } = false;
 
         [Description("scp343 can open doors?")]
         public bool scp343_canopenanydoor { get; set; } = true;
-        //[Description("Can scp343 stop scp173?")]
-        //public bool scp343_canstopscp173 { get; set; } = false;
+        [Description("Can scp343 stop scp173?")]
+        public bool scp343_canstopscp173 { get; set; } = false;
 
         [Description("What broadcasted who become scp343")]
         public string scp343_alerttext { get; set; } = "You're SCP-343! Check your console for more information about SCP-343.";
@@ -44,6 +41,8 @@ namespace SCP343
         public bool scp343_heck { get; set; } = true;
         [Description("How long people should beable to respawn themselves as d-class.")]
         public int scp343_hecktime { get; set; } = 30;
+        [Description("If scp343_heck is false, what should send in console")]
+        public string scp343_heckerrordisable { get; set; } = ".heck343 is disabled by config";
         [Description("Should SPC-343 beable to interact with the nuke.")]
         public bool scp343_nuke_interact { get; set; } = true;
         [Description("How long in seconds till SPC-343 can open any door.")]

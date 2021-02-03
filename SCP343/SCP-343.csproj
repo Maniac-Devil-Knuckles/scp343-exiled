@@ -28,9 +28,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\Downloads\Exiled\Assembly-CSharp.dll</HintPath>
-    </Reference>
     <Reference Include="Exiled.Loader">
       <HintPath>..\packages\EXILED.2.1.30\lib\net472\Exiled.Loader.dll</HintPath>
     </Reference>
@@ -76,6 +73,9 @@
     <Reference Include="Exiled.Bootstrap">
       <HintPath>..\packages\EXILED.2.1.30\lib\net472\Exiled.Bootstrap.dll</HintPath>
     </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\..\Volumes\SCP-343-1.4.3\RemoteKeycard-1.4.1-3.6.0\Assembly-CSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Scp343.cs" />
@@ -87,6 +87,8 @@
     <Compile Include="patches\SCP096.cs" />
     <Compile Include="ExtentionMethods.cs" />
     <Compile Include="Commands\Spawn343.cs" />
+    <Compile Include="patches\SCP173.cs" />
+    <Compile Include="scp343badge.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

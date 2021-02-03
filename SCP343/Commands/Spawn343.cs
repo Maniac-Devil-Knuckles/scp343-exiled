@@ -4,7 +4,6 @@ using MEC;
 using RemoteAdmin;
 using System;
 using Exiled.Permissions.Extensions;
-
 namespace SCP343.Commands
 {
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
@@ -42,7 +41,6 @@ namespace SCP343.Commands
                         return false;
                     }
                     Player player = Player.Get(PlayerId);
-                    //Log.Info(player.UserId);
                     if (player == null)
                     {
                         response = "Incorrect PlayerId";

@@ -13,7 +13,7 @@ namespace SCP343.Patches
 			Player player = Player.Get(target);
 			if (player.IsSCP343())
 			{
-				player.ReferenceHub.playerEffectsController.DisableEffect<CustomPlayerEffects.Amnesia>();
+				player.DisableEffect<CustomPlayerEffects.Amnesia>();
 			}
 		}
 	}

@@ -7,7 +7,6 @@ using static SCP343.SCP343;
 using MEC;
 using System.Linq;
 using Random = System.Random;
-
 namespace SCP343.HandlersPl
 {
     public class Players
@@ -15,8 +14,7 @@ namespace SCP343.HandlersPl
         private SCP343 plugin;
         //private bool IsRoundStarted => RoundSummary.RoundInProgress();
         public Players(SCP343 plugin) => this.plugin = plugin;
-        public scp343badge scp343badge { get; set; } = null;
-
+        private CoroutineHandle checkplayers;
         public void OnInteractingElevator(InteractingElevatorEventArgs ev)
         {
             if (ev.Player.IsSCP343())
@@ -27,11 +25,13 @@ namespace SCP343.HandlersPl
         }
         public void OnRoundEnd(RoundEndedEventArgs ev)
         {
-               if(scp343badge!=null) KillSCP343(Player.Get(scp343badge.Id));
+            foreach (Player player in Player.List) if (player.IsSCP343()) KillSCP343(player); 
+            scp343badgelist.Clear();
+            Timing.KillCoroutines(checkplayers);
         }
         public void OnRoundEnding(EndingRoundEventArgs ev)
         {
-            if (scp343badge!=null)
+            if (scp343badgelist.Count>0)
             {
                 List<Player> mtf = new List<Player>();
                 List<Player> classd = new List<Player>();
@@ -65,7 +65,7 @@ namespace SCP343.HandlersPl
                         ev.ReturnMessage = plugin.Config.scp343_heckerrordisable;
                         return;
                     }
-                    bool allowed = scp343badge.heck;
+                    bool allowed = ev.Player.GetSCP343Badge().canheck;
                     if (allowed)
                     {
                             ev.Player.SetRole(RoleType.ClassD);
@@ -124,7 +124,7 @@ namespace SCP343.HandlersPl
 
         public void OnInteractingLocker(InteractingLockerEventArgs ev)
         {
-            if (ev.Player.IsSCP343() && scp343badge.opendoor) ev.IsAllowed = plugin.Config.scp343_canopenanydoor;
+            if (ev.Player.IsSCP343() && ev.Player.GetSCP343Badge().canopendoor) ev.IsAllowed = plugin.Config.scp343_canopenanydoor;
         }
 
         public void OnDied(DiedEventArgs ev)
@@ -132,17 +132,16 @@ namespace SCP343.HandlersPl
             Player player = ev.Target;
             if (player.IsSCP343())
             {
-
                 KillSCP343(player);
             }
         }
         public void KillSCP343(Player player)
         {
             if (!player.IsSCP343()) return;
-            player.Id = scp343badge.Id;
-            player.RankColor = scp343badge.rankcolor;
-            player.RankName= scp343badge.rankname;
+            player.RankColor = player.GetSCP343Badge().rankcolor;
+            player.RankName= player.GetSCP343Badge().rankname;
             if (player.Group.HiddenByDefault) player.BadgeHidden = true;
+            scp343badgelist.Remove(player);
         }
         Random RNG = new Random();
         public void OnBlinking(BlinkingEventArgs ev)
@@ -165,11 +164,12 @@ namespace SCP343.HandlersPl
         public void OnRestartingRound()
         {;
             foreach (Player pl in Player.List) if (pl.IsSCP343()) KillSCP343(pl);
-            scp343badge = null;
+            scp343badgelist.Clear();
+            Timing.KillCoroutines(checkplayers);
         }
         public void OnRoundStarted()
         {
-            scp343badge = null;
+            scp343badgelist.Clear();
             if (!plugin.Config.IsEnabled)
             {
                 plugin.OnDisabled();
@@ -184,6 +184,8 @@ namespace SCP343.HandlersPl
             {
                 if (play.Role == RoleType.ClassD) ClassDList.Add(play);
             }
+
+            checkplayers = Timing.RunCoroutine(scp343badgelist.SetPlayers());
             Player player = ClassDList[RNG.Next(ClassDList.Count)];
             Timing.CallDelayed(0.5f, () =>
             {
@@ -204,19 +206,18 @@ namespace SCP343.HandlersPl
             }
             catch (Exception ex)
             {
-                Log.Debug(ex, instance.Config.Debug);
+                Log.Debug(ex, plugin.Config.Debug);
             }
         }
-        public void spawn343(Player player, bool scp0492 = false)
+        public scp343badge spawn343(Player player, bool scp0492 = false)
         {
             if (scp0492)
             {
                 KillSCP343(player);
             }
-            if (player.IsSCP343()) return;
+            if (player.IsSCP343()) return player.GetSCP343Badge();
             if (player.BadgeHidden) player.BadgeHidden = false;
-            scp343badge = new scp343badge(player);
-            player.Id = 343;
+           scp343badge badge= new scp343badge(player);
             player.RankColor="red";
             player.RankName="SCP-343";
             if (plugin.Config.scp343_alert && !scp0492)
@@ -235,21 +236,22 @@ namespace SCP343.HandlersPl
                 {
                     foreach (int item in plugin.Config.scp343_itemsatspawn) player.AddItem((ItemType)item);
                 }
-                if(instance.Config.scp343_heck) scp343badge.heck=true;
+                if(plugin.Config.scp343_heck) player.GetSCP343Badge().heck =true;
                 player.Health = 100f;
             });
             if (plugin.Config.scp343_canopenanydoor) Timing.CallDelayed(plugin.Config.scp343_opendoortime, () => {
-                scp343badge.opendoor = true;
+                player.GetSCP343Badge().opendoor = true;
             });
             if(plugin.Config.scp343_heck) Timing.CallDelayed(plugin.Config.scp343_hecktime, () =>
             {
-                scp343badge.heck = false;
+                player.GetSCP343Badge().heck = false;
             });
+            return badge;
         }
 
         public void OnInteractingDoor(InteractingDoorEventArgs ev)
         {
-            if (ev.Player.IsSCP343() && scp343badge.opendoor)
+            if (ev.Player.IsSCP343() && scp343badgelist.Get(ev.Player).canopendoor)
             {
                 ev.IsAllowed = true;
             }
@@ -260,7 +262,7 @@ namespace SCP343.HandlersPl
             List<ItemType> items = new List<ItemType>();
             foreach (var ite in ev.Player.Inventory.items)
             {
-                Log.Debug("Items "+ite.id, instance.Config.Debug);
+                Log.Debug("Items "+ite.id, plugin.Config.Debug);
                 items.Add(ite.id);
             }
             if (ev.Player.IsSCP343() && ev.NewRole != RoleType.Scp0492)
@@ -328,7 +330,7 @@ namespace SCP343.HandlersPl
 
         public void OnUnlockingGenerator(UnlockingGeneratorEventArgs ev)
         {
-            if (ev.Player.IsSCP343() && scp343badge.opendoor) ev.IsAllowed = true;
+            if (ev.Player.IsSCP343() && ev.Player.GetSCP343Badge().canopendoor) ev.IsAllowed = true;
         }
         public void OnTriggeringTesla(TriggeringTeslaEventArgs ev)
         {
@@ -338,6 +340,11 @@ namespace SCP343.HandlersPl
         {
             if (ev.Player.IsSCP343())
             {
+                if(!plugin.Config.scp343_itemconverttoggle)
+                {
+                    ev.IsAllowed = false;
+                    return;
+                }
                 int itemid = (int)ev.Pickup.ItemId;
                 if (plugin.Config.scp343_itemdroplist.IndexOf(itemid) > 0)
                 {

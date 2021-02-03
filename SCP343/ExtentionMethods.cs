@@ -6,10 +6,14 @@ namespace SCP343
 {
     public static class ExtentionMethods
     {
-        internal static bool IsSCP343(this Player player)
+        public static bool IsSCP343(this Player player)
         {
-            if (SCP343.players.scp343badge == null) return false;
-            return SCP343.players.scp343badge.UserId == player.UserId;
+            return scp343badgelist.Contains(player);
+        }
+        public static scp343badge GetSCP343Badge(this Player player)
+        {
+            if (!player.IsSCP343()) return null;
+            return scp343badgelist.Get(player.Id);
         }
     }
 }

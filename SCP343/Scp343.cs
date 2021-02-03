@@ -19,12 +19,17 @@ using HarmonyLib;
 using System.Collections.Generic;
 using Exiled.Loader;
 using System.Linq;
+using System.ComponentModel;
 
 namespace SCP343
 {
     public class API
     {
-        public static Exiled.API.Features.Player GetSCP343() {
+        /// <summary>
+        /// Get random SCP343 on the server <see cref="Exiled.API.Features.Player"/>.
+        /// </summary>
+        public static Exiled.API.Features.Player GetSCP343()
+        {
                 Exiled.API.Features.Player l = null;
                 foreach (Exiled.API.Features.Player p in Exiled.API.Features.Player.List)
                 {
@@ -32,18 +37,38 @@ namespace SCP343
                 }
                 return l;
         }
-        public static void spawn343(Exiled.API.Features.Player player)
+        /// <summary>
+        /// Get ALL list scp343 on the server and returns list of <see cref="Exiled.API.Features.Player>"/>.
+        /// </summary>
+        public static List<Exiled.API.Features.Player> scp343list
         {
-            SCP343.players.spawn343(player);
-            SCP343.players.tryplugin(player);
+            get
+            {
+                List<Exiled.API.Features.Player> players = new List<Exiled.API.Features.Player>();
+                foreach (Exiled.API.Features.Player player in Exiled.API.Features.Player.List) if (player.IsSCP343()) players.Add(player);
+                return players;
+            }
         }
+        /// <summary>
+        /// This spawns player as scp343 and returns <see cref="scp343badge"/>
+        /// </summary>
+        public static scp343badge Spawn343(Exiled.API.Features.Player player)
+        {
+            scp343badge scp343badge =SCP343.players.spawn343(player);
+            SCP343.players.tryplugin(player);
+            return scp343badge;
+        }
+        /// <summary>
+        /// This kills scp343
+        /// </summary>
         public static void Kill343(Exiled.API.Features.Player player) => SCP343.players.KillSCP343(player);
     }
 
     public class SCP343 : Plugin<Config>
     {
 		public static Players players { get; private set; }
-		public override string Name => "SCP-343";
+        
+        public override string Name => "SCP-343";
         public override string Prefix => "SCP-343";
         public override string Author => "Maniac Devil Knuckles";
 		public override Version Version { get; } = new Version(1, 3, 0);

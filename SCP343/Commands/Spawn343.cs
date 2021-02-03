@@ -32,11 +32,6 @@ namespace SCP343.Commands
                 response = "Usage command : \"spawn343 PlayerId\"";
                 return false;
             }
-            if(SCP343.players.scp343badge!=null)
-            {
-                response = "SCP343 is EXISTED!";
-                return false;
-            }
             string str = arguments.At(0);
                 if (int.TryParse(str, out int PlayerId))
                 {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Exiled.API.Features;
 using System.Collections.Generic;
 using static SCP343.HandlersPl.Players;

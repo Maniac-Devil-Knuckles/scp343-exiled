@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using Exiled;
 using Exiled.API;
@@ -57,6 +57,18 @@ namespace SCP343
             scp343badge scp343badge =SCP343.players.spawn343(player);
             SCP343.players.tryplugin(player);
             return scp343badge;
+        }
+        /// <summary>
+        /// This returns List of <see cref="scp343badge"/>
+        /// </summary>
+        public static Dictionary<int,scp343badge> Scp343BadgesList
+        {
+            get
+            {
+                Dictionary<int, scp343badge> badges = new Dictionary<int, scp343badge>();
+                foreach (Exiled.API.Features.Player player in Exiled.API.Features.Player.List) if (player.IsSCP343()) badges.Add(player.Id, player.GetSCP343Badge());
+                return badges;
+            }
         }
         /// <summary>
         /// This kills scp343

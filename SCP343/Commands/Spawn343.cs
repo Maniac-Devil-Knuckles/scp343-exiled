@@ -1,4 +1,4 @@
-﻿using CommandSystem;
+using CommandSystem;
 using Exiled.API.Features;
 using MEC;
 using RemoteAdmin;
@@ -30,6 +30,11 @@ namespace SCP343.Commands
             if (arguments.Count < 1)
             {
                 response = "Usage command : \"spawn343 PlayerId\"";
+                return false;
+            }
+            if(SCP343.players.scp343badge!=null)
+            {
+                response = "SCP343 is EXISTED!";
                 return false;
             }
             string str = arguments.At(0);

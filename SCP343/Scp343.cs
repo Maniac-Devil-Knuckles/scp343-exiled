@@ -38,9 +38,9 @@ namespace SCP343
                 return l;
         }
         /// <summary>
-        /// Get ALL list scp343 on the server and returns list of <see cref="Exiled.API.Features.Player>"/>.
+        /// Get ALL list of scp343 on the server and returns list of <see cref="Exiled.API.Features.Player>"/>.
         /// </summary>
-        public static List<Exiled.API.Features.Player> scp343list
+        public static List<Exiled.API.Features.Player> Scp343list
         {
             get
             {
@@ -65,8 +65,7 @@ namespace SCP343
         {
             get
             {
-                Dictionary<int, scp343badge> badges = new Dictionary<int, scp343badge>();
-                foreach (Exiled.API.Features.Player player in Exiled.API.Features.Player.List) if (player.IsSCP343()) badges.Add(player.Id, player.GetSCP343Badge());
+                Dictionary<int, scp343badge> badges = scp343badgelist.List;
                 return badges;
             }
         }

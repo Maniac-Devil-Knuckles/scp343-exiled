@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Exiled.API.Features;
@@ -42,19 +42,21 @@ namespace SCP343
     {
         private static bool RoundIsStarted => RoundSummary.RoundInProgress();
         private static Dictionary<int, scp343badge> badges { get; set; } = new Dictionary<int, scp343badge>();
-        internal static List<Player> GetPlayers()
+        internal static Dictionary<int, scp343badge> List
         {
-            List<Player> players = new List<Player>();
-            foreach (var badge in badges) players.Add(badge.Value.player);
-            return players;
+            get
+            {
+                Dictionary<int, scp343badge> badge = badges;
+                return badge;
+            }
         }
         internal static IEnumerator<float> SetPlayers()
         {
             while(RoundIsStarted)
             {
-                foreach(var player in GetPlayers())
+                foreach(var player in List)
                 {
-                    badges[player.Id].player = Player.Get(player.Id);
+                    badges[player.Value.player.Id].player = Player.Get(player.Value.Id);
                     yield return Timing.WaitForSeconds(1f);
                 }
             }

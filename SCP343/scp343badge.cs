@@ -50,16 +50,13 @@ namespace SCP343
                 return badge;
             }
         }
-        internal static IEnumerator<float> SetPlayers()
+        internal static void SetPlayers()
         {
-            while(RoundIsStarted)
-            {
-                foreach(var player in List)
+              if(RoundIsStarted) foreach(var player in List)
                 {
-                    badges[player.Value.player.Id].player = Player.Get(player.Value.Id);
-                    yield return Timing.WaitForSeconds(1f);
+                    badges[player.Value.player.Id].player = Player.Get(player.Value.Id);;
                 }
-            }
+            Timing.CallDelayed(5f, () => SetPlayers());
         }
         internal static void Add(scp343badge scp343) => badges.Add(scp343.Id,scp343);
         internal static void Remove(Player player) => badges.Remove(player.Id);

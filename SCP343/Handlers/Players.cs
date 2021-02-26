@@ -14,7 +14,6 @@ namespace SCP343.HandlersPl
         private SCP343 plugin;
         //private bool IsRoundStarted => RoundSummary.RoundInProgress();
         public Players(SCP343 plugin) => this.plugin = plugin;
-        private CoroutineHandle checkplayers;
         public void OnInteractingElevator(InteractingElevatorEventArgs ev)
         {
             if (ev.Player.IsSCP343())
@@ -27,7 +26,6 @@ namespace SCP343.HandlersPl
         {
             foreach (Player player in Player.List) if (player.IsSCP343()) KillSCP343(player); 
             scp343badgelist.Clear();
-            Timing.KillCoroutines(checkplayers);
         }
         public void OnRoundEnding(EndingRoundEventArgs ev)
         {
@@ -144,10 +142,13 @@ namespace SCP343.HandlersPl
             scp343badgelist.Remove(player);
         }
         Random RNG = new Random();
-        public void OnBlinking(BlinkingEventArgs ev)
+
+        public void OnPlacingBlood(PlacingBloodEventArgs ev)
         {
-            ev.Targets.RemoveAll(e => !e.IsSCP343());
+            if (!ev.Player.IsSCP343()) return;
+            ev.IsAllowed = false;
         }
+
         public void OnHurting(HurtingEventArgs ev)
         {
             if (ev.Target.IsSCP343())
@@ -165,7 +166,6 @@ namespace SCP343.HandlersPl
         {;
             foreach (Player pl in Player.List) if (pl.IsSCP343()) KillSCP343(pl);
             scp343badgelist.Clear();
-            Timing.KillCoroutines(checkplayers);
         }
         public void OnRoundStarted()
         {
@@ -184,8 +184,6 @@ namespace SCP343.HandlersPl
             {
                 if (play.Role == RoleType.ClassD) ClassDList.Add(play);
             }
-
-            checkplayers = Timing.RunCoroutine(scp343badgelist.SetPlayers());
             Player player = ClassDList[RNG.Next(ClassDList.Count)];
             Timing.CallDelayed(0.5f, () =>
             {

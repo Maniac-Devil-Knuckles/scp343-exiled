@@ -8,8 +8,8 @@ using Exiled.Events;
 using Exiled.Events.Commands.Reload;
 using SCP343.HandlersPl;
 //using SCP343.Commands;
-using Player = Exiled.Events.Handlers.Player;
-using Server = Exiled.Events.Handlers.Server;
+using PLAYER = Exiled.Events.Handlers.Player;
+using Servers = Exiled.Events.Handlers.Server;
 using Scps914 = Exiled.Events.Handlers.Scp914;
 using SCP106 = Exiled.Events.Handlers.Scp106;
 using WARHEAD = Exiled.Events.Handlers.Warhead;
@@ -95,7 +95,7 @@ namespace SCP343
             instance = this;
             try
             {
-                harmony = new Harmony("knuckles.scp343\nVersion" + i++);
+                harmony = new Harmony("knuckles.scp343\nVersion " + i++);
                 harmony.PatchAll();
                 Log.Info("cool");
             } catch(Exception ex)
@@ -105,61 +105,62 @@ namespace SCP343
             }
 			players = new Players(this);
             Log.Info("Enabling SCP343 by Maniac Devil Knuckles");
-            Server.EndingRound += players.OnRoundEnding;
-            Player.ChangingRole += players.OnChangingRole;
-            Player.TriggeringTesla += players.OnTriggeringTesla;
-            Server.RoundStarted += players.OnRoundStarted;
-            Player.Died += players.OnDied;
-            Player.Hurting += players.OnHurting;
+            Servers.EndingRound += players.OnRoundEnding;
+            PLAYER.ChangingRole += players.OnChangingRole;
+            PLAYER.TriggeringTesla += players.OnTriggeringTesla;
+            Servers.RoundStarted += players.OnRoundStarted;
+            PLAYER.Died += players.OnDied;
+            PLAYER.Hurting += players.OnHurting;
             //Player.Escaping += players.OnEscaping;
-            Player.UnlockingGenerator += players.OnUnlockingGenerator;
+            PLAYER.UnlockingGenerator += players.OnUnlockingGenerator;
             Scps914.Activating += players.OnActivating;
             SCP106.Containing += players.OnContaining;
-            Player.PickingUpItem += players.OnPickingUpItem;
-            Player.InteractingLocker += players.OnInteractingLocker;
-            Player.Handcuffing += players.OnHandcuffing;
-            Server.SendingConsoleCommand += players.OnSendingConsoleCommand;
-            Player.InteractingDoor += players.OnInteractingDoor;
+            PLAYER.PickingUpItem += players.OnPickingUpItem;
+            PLAYER.InteractingLocker += players.OnInteractingLocker;
+            PLAYER.Handcuffing += players.OnHandcuffing;
+            Servers.SendingConsoleCommand += players.OnSendingConsoleCommand;
+            PLAYER.InteractingDoor += players.OnInteractingDoor;
             WARHEAD.ChangingLeverStatus += players.OnChangingLeverStatus;
             WARHEAD.Starting += players.OnStarting;
             WARHEAD.Stopping += players.OnStopping;
-            Player.ActivatingWarheadPanel += players.OnActivatingWarheadPanel;
-            Player.EnteringPocketDimension += players.OnEnteringPocketDimension;
+            PLAYER.ActivatingWarheadPanel += players.OnActivatingWarheadPanel;
+            PLAYER.EnteringPocketDimension += players.OnEnteringPocketDimension;
             //Server.SendingRemoteAdminCommand += players.OnCommand;
-            Player.InteractingElevator += players.OnInteractingElevator;
-            Server.RoundEnded += players.OnRoundEnd;
-            Server.RestartingRound += players.OnRestartingRound;
+            PLAYER.InteractingElevator += players.OnInteractingElevator;
+            Servers.RoundEnded += players.OnRoundEnd;
+            Servers.RestartingRound += players.OnRestartingRound;
             SCP096.AddingTarget += players.OnAddingTarget;
             SCP096.Enraging += players.OnEnraging;
-            Exiled.Events.Handlers.Scp173.Blinking+=players.OnBlinking;
+            Exiled.Events.Handlers.Map.PlacingBlood+=players.OnPlacingBlood;
+            MEC.Timing.CallDelayed(30f, () => scp343badgelist.SetPlayers());
         }
 
         public override void OnDisabled()
 		{
             Log.Info("Disabling SCP343 by Maniac Devil Knuckles");
-            harmony.UnpatchAll();
+            harmony.UnpatchAll(harmony.Id);
             harmony = null;
-            Player.ChangingRole -= players.OnChangingRole;
-            Player.TriggeringTesla -= players.OnTriggeringTesla;
-            Server.RoundStarted -= players.OnRoundStarted;
-            Player.Died -= players.OnDied;
-            Player.Hurting -= players.OnHurting;
-            Player.Destroying += players.OnDestroyingEvent;
+            PLAYER.ChangingRole -= players.OnChangingRole;
+            PLAYER.TriggeringTesla -= players.OnTriggeringTesla;
+            Servers.RoundStarted -= players.OnRoundStarted;
+            PLAYER.Died -= players.OnDied;
+            PLAYER.Hurting -= players.OnHurting;
+            PLAYER.Destroying += players.OnDestroyingEvent;
             //Player.Escaping -= players.OnEscaping;
-            Player.UnlockingGenerator -= players.OnUnlockingGenerator;
+            PLAYER.UnlockingGenerator -= players.OnUnlockingGenerator;
             Scps914.Activating -= players.OnActivating;
             SCP106.Containing -= players.OnContaining;
-            Player.PickingUpItem -= players.OnPickingUpItem;
-            Player.InteractingLocker -= players.OnInteractingLocker;
-            Player.Handcuffing -= players.OnHandcuffing;
-            Server.SendingConsoleCommand -= players.OnSendingConsoleCommand;
-            Player.InteractingDoor -= players.OnInteractingDoor;
+            PLAYER.PickingUpItem -= players.OnPickingUpItem;
+            PLAYER.InteractingLocker -= players.OnInteractingLocker;
+            PLAYER.Handcuffing -= players.OnHandcuffing;
+            Servers.SendingConsoleCommand -= players.OnSendingConsoleCommand;
+            PLAYER.InteractingDoor -= players.OnInteractingDoor;
             WARHEAD.ChangingLeverStatus -= players.OnChangingLeverStatus;
             WARHEAD.Starting -= players.OnStarting;
             WARHEAD.Stopping -= players.OnStopping;
-            Player.ActivatingWarheadPanel -= players.OnActivatingWarheadPanel;
-            Player.EnteringPocketDimension -= players.OnEnteringPocketDimension;
-            
+            PLAYER.ActivatingWarheadPanel -= players.OnActivatingWarheadPanel;
+            PLAYER.EnteringPocketDimension -= players.OnEnteringPocketDimension;
+            Exiled.Events.Handlers.Map.PlacingBlood -= players.OnPlacingBlood;
             players = null; ;
         }
         public override void OnReloaded() { }

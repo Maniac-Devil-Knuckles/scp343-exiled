@@ -32,9 +32,9 @@ Put SCP343.dll under the release tab into %appdata%\EXILED\Plugins\ on Windows, 
 |   :---:                    |     :---:       |    :---:                                 |
 | spawn343                   | PlayerID        | Spawn SCP-343 from PlayerID (Number next to name with M menu). Example = "spawn343 2" |
 
-| Permission(s)                 | Value Type      | Description                              |
-|   :---:                    |     :---:       |    :---:                                 |
-| scp343.spawn                   | PlayerID        | This permissions required for spawning as scp343 from command spawn343 |
+| Permission(s)     | Description                              |
+|   :---:           |    :---:                                 |
+| scp343.spawn      | This permissions required for spawning as scp343 from command spawn343 |
 ## Lore Friendly Description 
 SCP-343 is a passive immortal D-Class Personnel. He spawns with one Flashlight and any weapon he picks up is morphed to prevent violence. He seeks to help out who he deems worthy. 
 ## Technical Description  

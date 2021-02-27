@@ -7,7 +7,7 @@ Put SCP343.dll under the release tab into %appdata%\EXILED\Plugins\ on Windows, 
 # Config Options.
 | Config Option              | Value Type      | Default Value | Description |
 |   :---:                    |     :---:       |    :---:      |    :---:    |
-| IsEnabled                  | Boolean         | false         |  Will loading this plugin on the server or not |
+| IsEnabled                  | Boolean         | true         |  Will loading this plugin on the server or not |
 | scp343_spawnchance         | Float           | 10            | Percent chance for SPC-343 to spawn at the start of the round. |
 | scp343_opendoortime        | Integer         | 60            | How many seconds after roundstart till SCP-343 can open any door in the game (Like door bypass).               |
 | scp343_nuke_interact       | Boolean         | false         | Should SCP-343 beable to interact with the nuke?               |

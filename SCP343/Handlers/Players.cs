@@ -136,6 +136,8 @@ namespace SCP343.HandlersPl
         public void KillSCP343(Player player)
         {
             if (!player.IsSCP343()) return;
+            if (Scp173.TurnedPlayers.Contains(player)) Scp173.TurnedPlayers.Remove(player);
+            if (Scp096.TurnedPlayers.Contains(player)) Scp096.TurnedPlayers.Remove(player);
             player.RankColor = player.GetSCP343Badge().rankcolor;
             player.RankName= player.GetSCP343Badge().rankname;
             if (player.Group.HiddenByDefault) player.BadgeHidden = true;
@@ -147,6 +149,8 @@ namespace SCP343.HandlersPl
         {
             if (!ev.Player.IsSCP343()) return;
             ev.IsAllowed = false;
+            ev.Multiplier = 0f;
+            ev.Position = Vector3.zero;
         }
 
         public void OnHurting(HurtingEventArgs ev)
@@ -218,6 +222,8 @@ namespace SCP343.HandlersPl
            scp343badge badge= new scp343badge(player);
             player.RankColor="red";
             player.RankName="SCP-343";
+            if (!Scp173.TurnedPlayers.Contains(player)) Scp173.TurnedPlayers.Add(player);
+            if (!Scp096.TurnedPlayers.Contains(player)) Scp096.TurnedPlayers.Add(player);
             if (plugin.Config.scp343_alert && !scp0492)
             {
                 player.ClearBroadcasts();

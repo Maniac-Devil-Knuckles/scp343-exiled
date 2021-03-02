@@ -162,9 +162,17 @@ namespace SCP343.HandlersPl
                     ev.Amount = ev.Target.Health;
                     return;
                 }
-                else ev.Amount = 0f;
+                else
+                {
+                    ev.Amount = 0f;
+                    ev.IsAllowed = false;
+                }
             }
-            if (ev.Attacker.IsSCP343()) ev.Amount = 0;
+            if (ev.Attacker.IsSCP343())
+            {
+                ev.Amount = 0;
+                ev.IsAllowed = false;
+            }
         }
         public void OnRestartingRound()
         {;
